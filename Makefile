@@ -10,3 +10,6 @@ deploy:
 
 dev:
 	npx wrangler dev
+
+dev/request:
+	curl -X POST -H "Content-Type: application/json" -d "[1,2,3,4]" http://localhost:8787/

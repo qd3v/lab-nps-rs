@@ -2,7 +2,7 @@
 name = "nps-rs"
 version = "0.1.0"
 edition = "2021"
-authors = [ "Ivan Kulagin <ivan@kulagin.dev>" ]
+authors = ["Ivan Kulagin <ivan@kulagin.dev>"]
 
 [package.metadata.release]
 release = false
@@ -15,6 +15,9 @@ wasm-opt = false
 crate-type = ["cdylib"]
 
 [dependencies]
-worker = { version="0.3.4" }
-worker-macros = { version="0.3.4" }
-console_error_panic_hook = { version = "0.1.1" }
+worker = { version = "0.3.4" }
+worker-macros = { version = "0.3.4" }
+# Logs to console https://crates.io/crates/console_error_panic_hook
+# console_error_panic_hook = { version = "0.1.1" }
+# https://crates.io/crates/serde
+serde_json = { version = "1" }
