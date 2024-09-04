@@ -1,4 +1,4 @@
-use worker::{Request, Response, Env, Context, event, console_log};
+use worker::{Request, Response, Env, Context, event, console_log, Method};
 
 #[event(fetch)]
 pub async fn main(mut req: Request, _env: Env, _ctx: Context) -> worker::Result<Response> {
@@ -9,6 +9,10 @@ pub async fn main(mut req: Request, _env: Env, _ctx: Context) -> worker::Result<
         req.cf().unwrap().coordinates().unwrap_or_default(),
         req.cf().unwrap().region().unwrap_or("unknown region".into())
     );
+
+    if !matches!(req.method(), Method::Post) {
+        return Response::error("Method Not Allowed", 405);
+    }
 
     let result: worker::Result<Vec<i32>> = req.json().await;
 
