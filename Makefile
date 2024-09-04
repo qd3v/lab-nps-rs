@@ -11,5 +11,17 @@ deploy:
 dev:
 	npx wrangler dev
 
+#
+# REQUESTS
+#
+
+DEV_URL = http://localhost:8787/
+PROD_URL = https://nps-rs.kulagin.dev
+
+do_request = curl -X POST -H "Content-Type: application/json" -d "[1,2,3,4]" $(1)
+
 dev/request:
-	curl -X POST -H "Content-Type: application/json" -d "[1,2,3,4]" http://localhost:8787/
+	$(call do_request,$(DEV_URL))
+
+prod/request:
+	$(call do_request,$(PROD_URL))
