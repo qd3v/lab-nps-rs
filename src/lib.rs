@@ -1,4 +1,4 @@
-use worker::{Request, Response, Env, Context, event, console_log, Method};
+use worker::{Request, Response, Router, Env, Context, event, console_log};
 
 #[event(fetch)]
 pub async fn main(mut req: Request, _env: Env, _ctx: Context) -> worker::Result<Response> {
@@ -10,21 +10,25 @@ pub async fn main(mut req: Request, _env: Env, _ctx: Context) -> worker::Result<
         req.cf().unwrap().region().unwrap_or("unknown region".into())
     );
 
-    if !matches!(req.method(), Method::Post) {
-        return Response::error("Method Not Allowed", 405);
-    }
+    // Create an instance of the Router.
+    let router = Router::new();
 
-    let result: worker::Result<Vec<i32>> = req.json().await;
+    // Handle sum calculation.
+    router
+        .post_async("/", |mut req, _ctx| async move {
+            let result: worker::Result<Vec<i32>> = req.json().await;
 
-    match result {
-        Ok(numbers) => {
-            let sum: i32 = numbers.iter().sum();
-            Response::ok(sum.to_string())
-        },
-        Err(e) => {
-            Response::error(&format!("Error occurred while parsing JSON: {:?}", e), 400)
-        }
-    }
+            match result {
+                Ok(numbers) => {
+                    let sum: i32 = numbers.iter().sum();
+                    Response::ok(sum.to_string())
+                },
+                Err(e) => {
+                    Response::error(&format!("Error occurred while parsing JSON: {:?}", e), 400)
+                }
+            }
+        })
+        .run(req, _env).await
 }
 
 
